@@ -1,0 +1,77 @@
+<div class="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-12">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold tracking-tight text-white">Welcome back</h1>
+      <p class="mt-2 text-sm text-slate-400">Sign in to your CRM portal account</p>
+    </div>
+
+    <div class="bg-slate-900/40 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-8 shadow-2xl shadow-black/40">
+      @if (errorMessage()) {
+        <div class="mb-6 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-400">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
+        <div>
+          <label for="username" class="block text-sm font-medium text-slate-300 mb-1.5">Username</label>
+          <input
+            id="username"
+            type="text"
+            formControlName="username"
+            autocomplete="username"
+            placeholder="Enter your username"
+            class="w-full rounded-lg border bg-slate-950/60 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            [class.border-slate-700]="!(loginForm.controls.username.touched && loginForm.controls.username.invalid)"
+            [class.border-rose-500]="loginForm.controls.username.touched && loginForm.controls.username.invalid"
+          />
+          @if (loginForm.controls.username.touched && loginForm.controls.username.invalid) {
+            <p class="mt-1.5 text-xs text-rose-400">Username is required</p>
+          }
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            autocomplete="current-password"
+            placeholder="Enter your password"
+            class="w-full rounded-lg border bg-slate-950/60 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            [class.border-slate-700]="!(loginForm.controls.password.touched && loginForm.controls.password.invalid)"
+            [class.border-rose-500]="loginForm.controls.password.touched && loginForm.controls.password.invalid"
+          />
+          @if (loginForm.controls.password.touched && loginForm.controls.password.invalid) {
+            <p class="mt-1.5 text-xs text-rose-400">Password is required</p>
+          }
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="isLoading()"
+          class="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100"
+        >
+          @if (isLoading()) {
+            <svg class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Signing in...
+          } @else {
+            Sign in
+          }
+        </button>
+      </form>
+
+      <div class="mt-6 rounded-lg border border-dashed border-slate-700 bg-slate-950/40 px-4 py-3">
+        <p class="text-xs font-medium text-slate-400 mb-1">Test credentials</p>
+        <p class="text-xs text-slate-500">
+          Username: <span class="font-mono text-indigo-400">emilys</span>
+          <span class="mx-1.5 text-slate-600">|</span>
+          Password: <span class="font-mono text-indigo-400">emilyspass</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

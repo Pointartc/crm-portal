@@ -19,6 +19,10 @@ export const routes: Routes = [
         loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
       {
+        path: 'leads',
+        loadComponent: () => import('./components/leads/leads.component').then(m => m.LeadsComponent)
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

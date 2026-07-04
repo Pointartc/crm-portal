@@ -1,0 +1,60 @@
+<div class="space-y-8">
+  <!-- Header -->
+  <section>
+    <h1 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">Tasks & Todo List</h1>
+    <p class="mt-2 text-sm text-slate-400 sm:text-base">
+      Track and manage your daily internal CRM operations
+    </p>
+  </section>
+
+  @if (isLoading()) {
+    <div class="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-2xl p-6 shadow-xl">
+      <div class="flex min-h-[240px] flex-col items-center justify-center gap-4">
+        <svg class="h-8 w-8 animate-spin text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <p class="text-sm text-slate-400">Loading tasks...</p>
+      </div>
+    </div>
+  } @else {
+    <div class="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-2xl p-6 shadow-xl">
+      <ul class="divide-y divide-slate-800/60">
+        @for (task of tasks(); track task.id) {
+          <li class="flex items-center justify-between gap-4 py-4 first:pt-0 last:pb-0">
+            <div class="flex min-w-0 flex-1 items-center gap-3">
+              <div
+                class="flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors duration-200"
+                [ngClass]="task.completed ? 'border-indigo-500 bg-indigo-500' : 'border-slate-600 bg-slate-800/60'"
+              >
+                @if (task.completed) {
+                  <svg class="h-3 w-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                }
+              </div>
+              <span
+                class="text-sm transition-colors duration-200"
+                [class.text-white]="!task.completed"
+                [class.line-through]="task.completed"
+                [class.text-slate-500]="task.completed"
+              >
+                {{ task.todo }}
+              </span>
+            </div>
+
+            @if (task.completed) {
+              <span class="shrink-0 inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
+                Completed
+              </span>
+            } @else {
+              <span class="shrink-0 inline-flex items-center rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-400 ring-1 ring-inset ring-amber-500/20">
+                In Progress
+              </span>
+            }
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</div>

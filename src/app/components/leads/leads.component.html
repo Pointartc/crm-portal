@@ -5,7 +5,6 @@
       View and manage your CRM pipeline contacts
     </p>
   </section>
-
   <section class="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-4 shadow-xl backdrop-blur-xl sm:p-6">
     <div class="relative">
       <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500">
@@ -24,7 +23,6 @@
           />
         </svg>
       </span>
-
       <input
         type="text"
         placeholder="Search by first name, last name, or company..."
@@ -34,7 +32,6 @@
       />
     </div>
   </section>
-
   @if (isLoading()) {
     <div class="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 shadow-xl backdrop-blur-xl">
       <div class="flex min-h-[240px] flex-col items-center justify-center gap-4">
@@ -90,7 +87,6 @@
               </th>
             </tr>
           </thead>
-
           <tbody class="divide-y divide-slate-800/60">
             @for (lead of filteredLeads(); track lead.id; let i = $index) {
               <tr class="transition-colors duration-200 hover:bg-slate-800/30">
@@ -105,15 +101,12 @@
                     </span>
                   </div>
                 </td>
-
                 <td class="px-6 py-4 text-sm text-slate-300">
                   {{ lead.phone }}
                 </td>
-
                 <td class="px-6 py-4 text-sm text-slate-300">
                   {{ lead.company.name }}
                 </td>
-
                 <td class="px-6 py-4">
                   @if (getStatus(i) === 'Active') {
                     <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400 ring-1 ring-inset ring-emerald-500/20">

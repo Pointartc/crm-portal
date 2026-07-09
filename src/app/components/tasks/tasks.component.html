@@ -6,7 +6,6 @@
       Track and manage your daily internal CRM operations
     </p>
   </section>
-
   @if (isLoading()) {
     <div class="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-2xl p-6 shadow-xl">
       <div class="flex min-h-[240px] flex-col items-center justify-center gap-4">
@@ -46,7 +45,6 @@
                 {{ task.todo }}
               </span>
             </button>
-
             @if (task.completed) {
               <span class="shrink-0 inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
                 Completed

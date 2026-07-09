@@ -22,7 +22,7 @@
     </section>
   } @else {
     <section class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-      <article class="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 shadow-xl backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-emerald-500/30">
+      <article class="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 shadow-xl backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-emerald-500/30">
         <div class="flex items-start justify-between gap-4">
           <div>
             <p class="text-sm font-medium text-slate-400">Total Revenue</p>
@@ -32,19 +32,8 @@
           </div>
 
           <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400">
-            <svg
-              class="h-6 w-6"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.8"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M12 6v12m6-6H6"
-              />
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
             </svg>
           </div>
         </div>
@@ -54,7 +43,7 @@
         </p>
       </article>
 
-      <article class="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 shadow-xl backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-sky-500/30">
+      <article class="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 shadow-xl backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-sky-500/30">
         <div class="flex items-start justify-between gap-4">
           <div>
             <p class="text-sm font-medium text-slate-400">Active Leads</p>
@@ -86,7 +75,7 @@
         </p>
       </article>
 
-      <article class="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 shadow-xl backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-amber-500/30">
+      <article class="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 shadow-xl backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-amber-500/30">
         <div class="flex items-start justify-between gap-4">
           <div>
             <p class="text-sm font-medium text-slate-400">Tasks Completed</p>
@@ -128,7 +117,7 @@
         </div>
       </article>
 
-      <article class="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 shadow-xl backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-indigo-500/30">
+      <article class="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 shadow-xl backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 hover:border-indigo-500/30">
         <div class="flex items-start justify-between gap-4">
           <div>
             <p class="text-sm font-medium text-slate-400">Open Tasks</p>
@@ -165,5 +154,114 @@
         </p>
       </article>
     </section>
+
+    <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <section class="lg:col-span-2 rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 shadow-xl backdrop-blur-xl transition-all duration-500">
+        <div class="mb-6 flex items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-semibold text-white">Recent Leads</h2>
+            <p class="mt-1 text-sm text-slate-400">
+              Newly loaded contacts from your CRM stream.
+            </p>
+          </div>
+        </div>
+
+        <div class="divide-y divide-slate-800/60">
+          @for (lead of recentLeads(); track lead.id; let i = $index) {
+            <div class="flex flex-col gap-4 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between">
+              <div class="flex min-w-0 items-center gap-4">
+                <img
+                  [src]="lead.image"
+                  [alt]="lead.firstName + ' ' + lead.lastName"
+                  class="h-11 w-11 rounded-full border border-slate-700/60 object-cover"
+                />
+
+                <div class="min-w-0">
+                  <p class="truncate text-sm font-medium text-white">
+                    {{ lead.firstName }} {{ lead.lastName }}
+                  </p>
+                  <p class="truncate text-sm text-slate-400">
+                    {{ lead.email }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3 sm:ml-4">
+                <p class="text-sm text-slate-300">
+                  {{ lead.company.name }}
+                </p>
+
+                @if (getLeadStatus(i) === 'New') {
+                  <span class="inline-flex items-center rounded-full bg-sky-500/10 px-2.5 py-0.5 text-xs font-medium text-sky-400 ring-1 ring-inset ring-sky-500/20">
+                    New
+                  </span>
+                } @else if (getLeadStatus(i) === 'Contacted') {
+                  <span class="inline-flex items-center rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-400 ring-1 ring-inset ring-amber-500/20">
+                    Contacted
+                  </span>
+                } @else {
+                  <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
+                    Qualified
+                  </span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 shadow-xl backdrop-blur-xl transition-all duration-500">
+        <div class="mb-6">
+          <h2 class="text-lg font-semibold text-white">Monthly Performance</h2>
+          <p class="mt-1 text-sm text-slate-400">
+            Lead activity overview for the last 6 months.
+          </p>
+        </div>
+      
+        <div class="flex h-56 items-end justify-between gap-3">
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative flex h-40 w-8 items-end overflow-hidden rounded-full bg-slate-800/80">
+              <div class="absolute bottom-0 w-full rounded-full bg-gradient-to-t from-indigo-600 to-violet-500" style="height: 40%;"></div>
+            </div>
+            <span class="text-xs text-slate-400">Jan</span>
+          </div>
+      
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative flex h-40 w-8 items-end overflow-hidden rounded-full bg-slate-800/80">
+              <div class="absolute bottom-0 w-full rounded-full bg-gradient-to-t from-indigo-600 to-violet-500" style="height: 65%;"></div>
+            </div>
+            <span class="text-xs text-slate-400">Feb</span>
+          </div>
+      
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative flex h-40 w-8 items-end overflow-hidden rounded-full bg-slate-800/80">
+              <div class="absolute bottom-0 w-full rounded-full bg-gradient-to-t from-indigo-600 to-violet-500" style="height: 50%;"></div>
+            </div>
+            <span class="text-xs text-slate-400">Mar</span>
+          </div>
+      
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative flex h-40 w-8 items-end overflow-hidden rounded-full bg-slate-800/80">
+              <div class="absolute bottom-0 w-full rounded-full bg-gradient-to-t from-indigo-600 to-violet-500" style="height: 85%;"></div>
+            </div>
+            <span class="text-xs text-slate-400">Apr</span>
+          </div>
+      
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative flex h-40 w-8 items-end overflow-hidden rounded-full bg-slate-800/80">
+              <div class="absolute bottom-0 w-full rounded-full bg-gradient-to-t from-indigo-600 to-violet-500" style="height: 70%;"></div>
+            </div>
+            <span class="text-xs text-slate-400">May</span>
+          </div>
+      
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative flex h-40 w-8 items-end overflow-hidden rounded-full bg-slate-800/80">
+              <div class="absolute bottom-0 w-full rounded-full bg-gradient-to-t from-indigo-600 to-violet-500" style="height: 95%;"></div>
+            </div>
+            <span class="text-xs text-slate-400">Jun</span>
+          </div>
+        </div>
+      </section>
+    </div>
   }
 </div>

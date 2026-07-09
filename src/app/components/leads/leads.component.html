@@ -1,15 +1,43 @@
 <div class="space-y-8">
-  <!-- Header -->
   <section>
-    <h1 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">Leads Management</h1>
+    <h1 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">Leads</h1>
     <p class="mt-2 text-sm text-slate-400 sm:text-base">
       View and manage your CRM pipeline contacts
     </p>
   </section>
 
+  <section class="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-4 shadow-xl backdrop-blur-xl sm:p-6">
+    <div class="relative">
+      <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500">
+        <svg
+          class="h-5 w-5"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.8"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-4.35-4.35m1.85-5.15a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
+          />
+        </svg>
+      </span>
+
+      <input
+        type="text"
+        placeholder="Search by first name, last name, or company..."
+        [value]="searchQuery()"
+        (input)="searchQuery.set($any($event.target).value)"
+        class="w-full rounded-xl border border-slate-700/60 bg-slate-900/50 py-3 pl-11 pr-4 text-sm text-white placeholder-slate-500 outline-none transition duration-200 focus:border-indigo-500/70 focus:ring-2 focus:ring-indigo-500/20"
+      />
+    </div>
+  </section>
+
   @if (isLoading()) {
-    <div class="flex min-h-[320px] items-center justify-center rounded-2xl bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 shadow-xl">
-      <div class="flex flex-col items-center gap-4">
+    <div class="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 shadow-xl backdrop-blur-xl">
+      <div class="flex min-h-[240px] flex-col items-center justify-center gap-4">
         <svg class="h-8 w-8 animate-spin text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -17,44 +45,82 @@
         <p class="text-sm text-slate-400">Loading leads...</p>
       </div>
     </div>
+  } @else if (filteredLeads().length === 0) {
+    <div class="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 shadow-xl backdrop-blur-xl">
+      <div class="flex min-h-[220px] flex-col items-center justify-center gap-3 text-center">
+        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-800/80 text-slate-400">
+          <svg
+            class="h-6 w-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.8"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m21 21-4.35-4.35m1.85-5.15a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
+            />
+          </svg>
+        </div>
+        <h2 class="text-base font-semibold text-white">No leads found</h2>
+        <p class="text-sm text-slate-400">
+          No leads found matching your search.
+        </p>
+      </div>
+    </div>
   } @else {
-    <div class="bg-slate-900/40 backdrop-blur-xl border border-slate-800/60 rounded-2xl overflow-hidden shadow-xl">
+    <div class="overflow-hidden rounded-2xl border border-slate-800/60 bg-slate-900/40 shadow-xl backdrop-blur-xl">
       <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="border-b border-slate-800/60 bg-slate-900/60">
-              <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Contact</th>
-              <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Email</th>
-              <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Phone</th>
-              <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Company</th>
-              <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-400">Status</th>
+        <table class="min-w-full divide-y divide-slate-800/60">
+          <thead class="bg-slate-950/40">
+            <tr>
+              <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Contact
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Phone
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Company
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Status
+              </th>
             </tr>
           </thead>
-          <tbody>
-            @for (lead of leads(); track lead.id; let i = $index) {
-              <tr class="border-b border-slate-800/40 transition-colors duration-150 hover:bg-slate-800/30">
+
+          <tbody class="divide-y divide-slate-800/60">
+            @for (lead of filteredLeads(); track lead.id; let i = $index) {
+              <tr class="transition-colors duration-200 hover:bg-slate-800/30">
                 <td class="px-6 py-4">
-                  <div class="flex items-center gap-3">
-                    <img
-                      [src]="lead.image"
-                      [alt]="lead.firstName + ' ' + lead.lastName"
-                      class="h-10 w-10 shrink-0 rounded-full border border-slate-700 object-cover"
-                    />
-                    <span class="text-sm font-medium text-white whitespace-nowrap">
+                  <div class="flex items-center gap-2">
+                    <img [src]="lead.image" [alt]="lead.firstName" class="h-10 w-10 rounded-full">
+                    <span class="text-sm font-medium text-white">
                       {{ lead.firstName }} {{ lead.lastName }}
+                    </span>
+                    <span class="text-sm text-slate-400">
+                      {{ lead.email }}
                     </span>
                   </div>
                 </td>
-                <td class="px-6 py-4 text-sm text-slate-300 whitespace-nowrap">{{ lead.email }}</td>
-                <td class="px-6 py-4 text-sm text-slate-300 whitespace-nowrap">{{ lead.phone }}</td>
-                <td class="px-6 py-4 text-sm text-slate-300 whitespace-nowrap">{{ lead.company.name }}</td>
+
+                <td class="px-6 py-4 text-sm text-slate-300">
+                  {{ lead.phone }}
+                </td>
+
+                <td class="px-6 py-4 text-sm text-slate-300">
+                  {{ lead.company.name }}
+                </td>
+
                 <td class="px-6 py-4">
                   @if (getStatus(i) === 'Active') {
                     <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
                       Active
                     </span>
                   } @else {
-                    <span class="inline-flex items-center rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-400 ring-1 ring-inset ring-amber-500/20">
+                    <span class="inline-flex items-center rounded-full bg-sky-500/10 px-2.5 py-0.5 text-xs font-medium text-sky-400 ring-1 ring-inset ring-sky-500/20">
                       Contacted
                     </span>
                   }

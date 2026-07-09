@@ -32,4 +32,32 @@ export class TasksComponent implements OnInit {
       }
     });
   }
+
+  toggleTaskStatus(taskId: number): void {
+    const task = this.tasks().find((t) => t.id === taskId);
+    if (!task) return;
+
+    const previousCompleted = task.completed;
+    const newCompleted = !previousCompleted;
+
+    this.tasks.update((tasks) =>
+      tasks.map((t) =>
+        t.id === taskId ? { ...t, completed: newCompleted } : t
+      )
+    );
+
+    this.http
+      .put(`https://dummyjson.com/todos/${taskId}`, {
+        completed: newCompleted
+      })
+      .subscribe({
+        error: () => {
+          this.tasks.update((tasks) =>
+            tasks.map((t) =>
+              t.id === taskId ? { ...t, completed: previousCompleted } : t
+            )
+          );
+        }
+      });
+  }
 }

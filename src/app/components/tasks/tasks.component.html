@@ -22,7 +22,11 @@
       <ul class="divide-y divide-slate-800/60">
         @for (task of tasks(); track task.id) {
           <li class="flex items-center justify-between gap-4 py-4 first:pt-0 last:pb-0">
-            <div class="flex min-w-0 flex-1 items-center gap-3">
+            <button
+              type="button"
+              (click)="toggleTaskStatus(task.id)"
+              class="flex min-w-0 flex-1 cursor-pointer select-none items-center gap-3 text-left transition-opacity duration-200 hover:opacity-80"
+            >
               <div
                 class="flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors duration-200"
                 [ngClass]="task.completed ? 'border-indigo-500 bg-indigo-500' : 'border-slate-600 bg-slate-800/60'"
@@ -41,7 +45,7 @@
               >
                 {{ task.todo }}
               </span>
-            </div>
+            </button>
 
             @if (task.completed) {
               <span class="shrink-0 inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400 ring-1 ring-inset ring-emerald-500/20">

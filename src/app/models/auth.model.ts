@@ -7,4 +7,13 @@ export interface LoginResponse {
   gender: string;
   image: string;
   token: string;
+  address: {
+    address: string;
+    city: string;
+    coordinates: {
+      lat: number;
+      lng: number;
+    };
+    postalCode: string;
+  };
 }

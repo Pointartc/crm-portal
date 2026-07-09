@@ -1,23 +1,51 @@
 import { NgClass } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
-interface TodosResponse {
-  todos: any[];
+interface Task {
+  id: number;
+  todo: string;
+  completed: boolean;
+  userId: number;
 }
+
+interface TodosResponse {
+  todos: Task[];
+}
+
+type TaskStatusFilter = 'all' | 'completed' | 'in-progress';
 
 @Component({
   selector: 'app-tasks',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, FormsModule],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.scss'
 })
 export class TasksComponent implements OnInit {
   private http = inject(HttpClient);
 
-  tasks = signal<any[]>([]);
+  tasks = signal<Task[]>([]);
   isLoading = signal<boolean>(false);
+  newTaskTitle = signal<string>('');
+  searchTerm = signal<string>('');
+  statusFilter = signal<TaskStatusFilter>('all');
+
+  filteredTasks = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+    const status = this.statusFilter();
+
+    return this.tasks().filter((task) => {
+      const matchesSearch = !term || task.todo.toLowerCase().includes(term);
+      const matchesStatus =
+        status === 'all' ||
+        (status === 'completed' && task.completed) ||
+        (status === 'in-progress' && !task.completed);
+
+      return matchesSearch && matchesStatus;
+    });
+  });
 
   ngOnInit(): void {
     this.isLoading.set(true);
@@ -37,8 +65,7 @@ export class TasksComponent implements OnInit {
     const task = this.tasks().find((t) => t.id === taskId);
     if (!task) return;
 
-    const previousCompleted = task.completed;
-    const newCompleted = !previousCompleted;
+    const newCompleted = !task.completed;
 
     this.tasks.update((tasks) =>
       tasks.map((t) =>
@@ -51,12 +78,35 @@ export class TasksComponent implements OnInit {
         completed: newCompleted
       })
       .subscribe({
-        error: () => {
-          this.tasks.update((tasks) =>
-            tasks.map((t) =>
-              t.id === taskId ? { ...t, completed: previousCompleted } : t
-            )
-          );
+        error: (err) => {
+          console.error('Failed to update task status', err);
+        }
+      });
+  }
+
+  addTask(): void {
+    const title = this.newTaskTitle().trim();
+    if (!title) return;
+
+    const newTask: Task = {
+      id: Date.now(),
+      todo: title,
+      completed: false,
+      userId: 1
+    };
+
+    this.tasks.set([newTask, ...this.tasks()]);
+    this.newTaskTitle.set('');
+
+    this.http
+      .post('https://dummyjson.com/todos/add', {
+        todo: title,
+        completed: false,
+        userId: 1
+      })
+      .subscribe({
+        error: (err) => {
+          console.error('Failed to add task', err);
         }
       });
   }
